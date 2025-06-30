@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	zapi "github.com/claranet/go-zabbix-api"
+	zapi "github.com/dsolopenkov-tf/go-zabbix-api"
 	"github.com/hashicorp/go-version"
 )
 

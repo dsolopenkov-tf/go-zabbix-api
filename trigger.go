@@ -2,12 +2,12 @@ package zabbix
 
 type (
 	// SeverityType of a trigger
-	// Zabbix severity see : https://www.zabbix.com/documentation/3.2/manual/api/reference/trigger/object
+	// Zabbix severity see : https://www.zabbix.com/documentation/6.0/en/manual/api/reference/trigger/object
 	SeverityType int
 )
 
 const (
-	// Different severity see : https://www.zabbix.com/documentation/3.2/manual/config/triggers/severity
+	// Different severity see : https://www.zabbix.com/documentation/6.0/en/manual/config/triggers/severity
 
 	// NotClassified is Not classified severity
 	NotClassified SeverityType = 0
@@ -31,12 +31,13 @@ const (
 )
 
 const (
-	// Trigger value see : https://www.zabbix.com/documentation/3.2/manual/config/triggers
-
-	// OK trigger value ok
+	// Trigger value see : https://www.zabbix.com/documentation/6.0/en/manual/config/triggers
+	// This is a normal trigger status
 	OK ValueType = 0
-	// Problem trigger value probleme
+	// Something has happened
 	Problem ValueType = 1
+	// The trigger value cannot be calculated
+	UnknownTriggerStatus StatusType = 2
 )
 
 // TriggerFunction The function objects represents the functions used in the trigger expression
@@ -51,11 +52,13 @@ type TriggerFunction struct {
 type TriggerFunctions []TriggerFunction
 
 // Trigger represent Zabbix trigger object
-// https://www.zabbix.com/documentation/3.2/manual/api/reference/trigger/object
+// https://www.zabbix.com/documentation/6.0/en/manual/api/reference/trigger/object
 type Trigger struct {
 	TriggerID   string `json:"triggerid,omitempty"`
 	Description string `json:"description"`
 	Expression  string `json:"expression"`
+	Event_name	string `json:"event_name"`
+	Opdata		string `json:"opdata"`
 	Comments    string `json:"comments"`
 	//TemplateId  string    `json:"templateid"`
 	//Value ValueType `json:""`
@@ -74,7 +77,7 @@ type Trigger struct {
 type Triggers []Trigger
 
 // TriggersGet Wrapper for trigger.get
-// https://www.zabbix.com/documentation/3.2/manual/api/reference/trigger/get
+// https://www.zabbix.com/documentation/6.0/en/manual/api/reference/trigger/get
 func (api *API) TriggersGet(params Params) (res Triggers, err error) {
 	if _, present := params["output"]; !present {
 		params["output"] = "extend"
@@ -100,7 +103,7 @@ func (api *API) TriggerGetByID(id string) (res *Trigger, err error) {
 }
 
 // TriggersCreate Wrapper for trigger.create
-// https://www.zabbix.com/documentation/3.2/manual/api/reference/trigger/create
+// https://www.zabbix.com/documentation/6.0/en/manual/api/reference/trigger/create
 func (api *API) TriggersCreate(triggers Triggers) (err error) {
 	response, err := api.CallWithError("trigger.create", triggers)
 	if err != nil {
@@ -116,7 +119,7 @@ func (api *API) TriggersCreate(triggers Triggers) (err error) {
 }
 
 // TriggersUpdate Wrapper for trigger.update
-// https://www.zabbix.com/documentation/3.2/manual/api/reference/trigger/update
+// https://www.zabbix.com/documentation/6.0/en/manual/api/reference/trigger/update
 func (api *API) TriggersUpdate(triggers Triggers) (err error) {
 	_, err = api.CallWithError("trigger.update", triggers)
 	return
@@ -124,7 +127,7 @@ func (api *API) TriggersUpdate(triggers Triggers) (err error) {
 
 // TriggersDelete Wrapper for trigger.delete
 // Cleans ItemId in all triggers elements if call succeed.
-// https://www.zabbix.com/documentation/3.2/manual/api/reference/trigger/delete
+// https://www.zabbix.com/documentation/6.0/en/manual/api/reference/trigger/delete
 func (api *API) TriggersDelete(triggers Triggers) (err error) {
 	ids := make([]string, len(triggers))
 	for i, trigger := range triggers {
@@ -141,7 +144,7 @@ func (api *API) TriggersDelete(triggers Triggers) (err error) {
 }
 
 // TriggersDeleteByIds Wrapper for trigger.delete
-// https://www.zabbix.com/documentation/3.2/manual/api/reference/trigger/delete
+// https://www.zabbix.com/documentation/6.0/en/manual/api/reference/trigger/delete
 func (api *API) TriggersDeleteByIds(ids []string) (err error) {
 	deleteIds, err := api.TriggersDeleteIDs(ids)
 	if err != nil {

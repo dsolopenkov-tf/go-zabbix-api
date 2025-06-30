@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/claranet/go-zabbix-api"
-	dd "github.com/claranet/go-zabbix-api"
-	zapi "github.com/claranet/go-zabbix-api"
+	"github.com/dsolopenkov-tf/go-zabbix-api"
+	dd "github.com/dsolopenkov-tf/go-zabbix-api"
+	zapi "github.com/dsolopenkov-tf/go-zabbix-api"
 )
 
 func testCreateTriggerPrototype(template *dd.Template, item *dd.ItemPrototype, t *testing.T) *dd.TriggerPrototype {
